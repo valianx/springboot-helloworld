@@ -1,15 +1,21 @@
 # Etapa 1: Construir la aplicación
 FROM gradle:7.6-jdk17 AS build
 
+# Instalar dependencias necesarias
+USER root
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libgconf-2-4 \
+    libxi6 \
+    libgdm1 \
+    libxkbcommon-x11-0
+
 # Configurar el directorio de trabajo
 WORKDIR /app
 
 # Copiar los archivos de Gradle y del proyecto
-COPY build.gradle settings.gradle /app/
-COPY src /app/src
-
-# Establecer permisos adecuados para los archivos de Gradle
-RUN chown -R gradle:gradle /app
+COPY --chown=gradle:gradle build.gradle settings.gradle /app/
+COPY --chown=gradle:gradle src /app/src
 
 # Configurar directorio temporal para Gradle
 ENV GRADLE_USER_HOME=/app/.gradle
