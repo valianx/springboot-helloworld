@@ -1,6 +1,10 @@
 # Etapa 1: Construir la aplicación
 FROM gradle:7.6-jdk17 AS build
 
+# Instalar dependencias necesarias
+USER root
+RUN apt-get update && apt-get install -y libnss3-dev libgconf-2-4
+
 # Configurar el directorio de trabajo
 WORKDIR /app
 
