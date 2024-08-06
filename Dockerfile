@@ -1,31 +1,14 @@
-# Etapa 1: Construir la aplicación
-FROM gradle:7.6-jdk17 AS build
+FROM gradle:jdk21-alpine AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build -x test
 
-# Configurar el directorio de trabajo
-WORKDIR /app
-
-# Copiar los archivos de Gradle y del proyecto
-COPY --chown=gradle:gradle build.gradle settings.gradle /app/
-COPY --chown=gradle:gradle src /app/src
-
-# Configurar directorio temporal para Gradle
-ENV GRADLE_USER_HOME=/app/.gradle
-
-# Ejecutar el build como el usuario gradle
-USER gradle
-RUN gradle build --no-daemon
-
-# Etapa 2: Crear la imagen para ejecutar la aplicación
 FROM openjdk:21-jdk-slim
-
-# Configurar el directorio de trabajo
-WORKDIR /app
-
-# Copiar el JAR construido desde la etapa 1
-COPY --from=build /app/build/libs/*.jar app.jar
-
-# Exponer el puerto de la aplicación
 EXPOSE 4000
+RUN mkdir /app
+WORKDIR /app
+RUN adduser --no-create-home --disabled-password -u 1234 juser
+USER juser
 
-# Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --chown=juser:juser --from=build /home/gradle/src/build/libs/*SNAPSHOT.jar /app/spring-boot-application.jar
+ENTRYPOINT ["java", "-jar" ,"/app/spring-boot-application.jar"]
