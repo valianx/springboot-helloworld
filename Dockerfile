@@ -11,6 +11,9 @@ COPY src /app/src
 # Establecer permisos adecuados para los archivos de Gradle
 RUN chown -R gradle:gradle /app
 
+# Configurar directorio temporal para Gradle
+ENV GRADLE_USER_HOME=/app/.gradle
+
 # Ejecutar el build como el usuario gradle
 USER gradle
 RUN gradle build --no-daemon
@@ -25,7 +28,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 # Exponer el puerto de la aplicación
-EXPOSE 8080
+EXPOSE 4000
 
 # Ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
