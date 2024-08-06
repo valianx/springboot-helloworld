@@ -1,19 +1,6 @@
 # Etapa 1: Construir la aplicación
 FROM gradle:7.6-jdk17 AS build
 
-# Instalar dependencias necesarias
-USER root
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg \
-    dirmngr \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32 \
-    && apt-get update && apt-get install -y \
-    libnss3 \
-    libgconf-2-4 \
-    libxi6 \
-    libgdm1 \
-    libxkbcommon-x11-0
-
 # Configurar el directorio de trabajo
 WORKDIR /app
 
