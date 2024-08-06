@@ -8,7 +8,11 @@ WORKDIR /app
 COPY build.gradle settings.gradle /app/
 COPY src /app/src
 
-# Ejecutar el build
+# Establecer permisos adecuados para los archivos de Gradle
+RUN chown -R gradle:gradle /app
+
+# Ejecutar el build como el usuario gradle
+USER gradle
 RUN gradle build --no-daemon
 
 # Etapa 2: Crear la imagen para ejecutar la aplicación
