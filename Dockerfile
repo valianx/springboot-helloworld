@@ -1,5 +1,5 @@
 # Etapa 1: Construir la aplicación
-FROM gradle:7.6-jdk21 AS build
+FROM gradle:7.6-jdk17 AS build
 
 # Configurar el directorio de trabajo
 WORKDIR /app
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 # Exponer el puerto de la aplicación
-EXPOSE 4000
+EXPOSE 8080
 
 # Ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
